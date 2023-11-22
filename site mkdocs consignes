@@ -1,0 +1,65 @@
+# mkdocs-material-intro-vscode.dev
+
+Le but est la création d'un site Mkdocs Material en utilisant 100% les outils en ligne (cloud).
+
+▬▬▬▬▬▬ 🔗 Additional Info 🔗 ▬▬▬▬▬▬   
+🔗 Video étape par étape [How To Create STUNNING Code Documentation With MkDocs Material Theme](https://youtu.be/Q-YA_dA8C20?feature=shared).     
+🔗 GitHub Repo for this Video: [https://github.com/james-willett/mkdocs](https://github.com/james-willett/mkdocs-material-youtube-tutorial).  
+🔗 MkDocs Material Theme: [https://squidfunk.github.io/mkdocs-material](https://squidfunk.github.io/mkdocs-material/).   
+🔗 MkDocs Material Documentation: [https://squidfunk.github.io/mkdocs-material](https://squidfunk.github.io/mkdocs-material/reference/code-blocks/). 
+🔗 Project documentation with Markdown 
+[https://www.mkdocs.org/](https://www.mkdocs.org/)
+
+## Reposetory
+
+* création d'un repo
+* ajouter un readme.md
+* ajouter un .gitignore python
+* Ajouter une licence de votre choix - Copyright (C)
+
+Acceder a votre repo récement créé et remplacer `github.com` par `github.dev` puis lancer un terminal en activant codespaces. 5installer si nécessaire vos extentions)
+
+## envirennement virtuel
+
+Prendred de bonnes habitudes en travaillant dans un environnement virtuel :
+
+* `python -m venv venv`
+* `source venv/bin/activate`
+
+Constater la ligne de commande qui bascule sur un environnement virtuel
+
+## Installer mkdocs-material
+
+L'installation peut se faire également sur un environnement Windows, macos ou Linux mais notre travail se fera 100% sur le codespaces.
+
+* `pip install --upgrade pip`
+* `pip install mkdocs-material`
+* `makdocs new`
+
+c'est fait, constatez les modifications sur votre repo
+
+## Git add, commit, push
+
+* `git add .`
+* `git commit -m "création de mon mkdocs"`
+* `git push`
+
+Cette opération est à faire à chaque fois que c'est nécessaire
+
+## Modifier le fichier mkdocs.yml
+
+[fichier a prendre en exemple](https://github.com/james-willett/mkdocs-material-youtube-tutorial/blob/main/mkdocs.yml)
+
+## Creation do dossier .github
+
+Creation du dossier a la racine .github
+puis, Creation du dossier a la racine .github/workflows
+
+* mkdir .github
+* cd .github
+* mkdir workflows
+* cd workflows
+* touch cd.yml
+
+Puis remplir le fichier cd.yml avec le contenu suivant
+[cd.yml](https://github.com/james-willett/mkdocs-material-youtube-tutorial/tree/main/.github/workflows)
