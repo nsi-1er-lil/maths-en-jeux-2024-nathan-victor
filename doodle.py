@@ -79,19 +79,18 @@ enemy = Mage(ENEMY_START_X, ENEMY_START_Y, ENEMY_COLOR, ENEMY_SPEED, ENEMY_MAX_H
 
 # Fonction pour détecter les collisions entre projectiles
 def handle_collisions():
-    for player_projectile, _ in player.projectiles[:]:
+    for player_projectile, _ in list(player.projectiles):
         if enemy.rect.colliderect(player_projectile):
-            if (player_projectile, PLAYER_PROJECTILE_SPEED) in enemy.projectiles:
-                enemy.projectiles.remove((player_projectile, PLAYER_PROJECTILE_SPEED))
-            player.projectiles.remove((player_projectile, PLAYER_PROJECTILE_SPEED))
+            if (player_projectile, PLAYER_PROJECTILE_SPEED) in player.projectiles:
+                player.projectiles.remove((player_projectile, PLAYER_PROJECTILE_SPEED))
             enemy.health -= 1
 
-    for enemy_projectile, _ in enemy.projectiles[:]:
+    for enemy_projectile, _ in list(enemy.projectiles):
         if player.rect.colliderect(enemy_projectile):
-            if (enemy_projectile, ENEMY_PROJECTILE_SPEED) in player.projectiles:
-                player.projectiles.remove((enemy_projectile, ENEMY_PROJECTILE_SPEED))
-            enemy.projectiles.remove((enemy_projectile, ENEMY_PROJECTILE_SPEED))
+            if (enemy_projectile, ENEMY_PROJECTILE_SPEED) in enemy.projectiles:
+                enemy.projectiles.remove((enemy_projectile, ENEMY_PROJECTILE_SPEED))
             player.health -= 1
+
 # Fonction pour dessiner les informations de santé
 def draw_health_info():
     font = pygame.font.Font(None, 36)
@@ -119,14 +118,6 @@ while running:
         player.move(0, -player.speed)
     if keys[pygame.K_DOWN]:
         player.move(0, player.speed)
-
-    # Mouvement de l'adversaire (IA)
-    if random.randint(0, 30) == 1:
-        enemy.shoot_projectile(-ENEMY_PROJECTILE_SPEED)
-    if player.rect.y < enemy.rect.y:
-        enemy.move(0, -enemy.speed)
-    elif player.rect.y > enemy.rect.y:
-        enemy.move(0, enemy.speed)
 
     # Mise à jour des projectiles
     player.update_projectiles()
@@ -159,4 +150,3 @@ elif enemy.health <= 0:
 # Fermeture de Pygame
 pygame.quit()
 sys.exit()
-
