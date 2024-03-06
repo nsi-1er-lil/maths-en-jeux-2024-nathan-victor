@@ -102,7 +102,9 @@ def draw_health_info():
 # Boucle principale du jeu
 running = True
 while running:
-    window.fill(BG_COLOR)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
     # Gestion des événements
     for event in pygame.event.get():
