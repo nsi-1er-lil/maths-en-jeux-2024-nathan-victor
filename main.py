@@ -2,27 +2,38 @@ import pygame
 import time
 import random
 pygame.font.init()
+pygame.mixer.init()
+pygame.mixer.music.load('music.mp3')  
+pygame.mixer.music.play(-1) 
+pygame.mixer.music.set_volume(0.5) 
 
 WIDTH, HEIGHT = 1000, 800
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Maths en jeux 2024")
 
-a = random.randint(1,100)
-b = random.randint(1,100)
+a = random.randint(1,15)
+b = random.randint(1,15)
 
-MATH_RECT_WIDTH = 30
-MATH_RECT_HEIGHT = 60
-MATH_RECT_VEL = 5
-MATH_RECT_ADD_INCREMENT = 10000
+
 
 BG = pygame.transform.scale(pygame.image.load("brick wall.jpeg"), (WIDTH, HEIGHT))
 PLAYER_SPRITE = pygame.image.load("bigbigplayer.png")
+MATH_SPRITE = pygame.image.load("star.png")
+STAR_SPRITE = pygame.image.load("arrow.png")
+
 PLAYER_WIDTH = PLAYER_SPRITE.get_width()
 PLAYER_HEIGHT = PLAYER_SPRITE.get_height()
 PLAYER_VEL = 12
+
 STAR_WIDTH = 9
 STAR_HEIGHT = 30
 STAR_VEL = 20
+
+MATH_RECT_WIDTH = MATH_SPRITE.get_width()
+MATH_RECT_HEIGHT = MATH_SPRITE.get_height()
+MATH_RECT_VEL = 8
+MATH_RECT_ADD_INCREMENT = 10000
+
 
 FONT = pygame.font.SysFont("comicsans", 30)
 
@@ -32,8 +43,8 @@ def draw_problem(problem_text):
     pygame.display.update()
 
 def get_answer():
-    a = random.randint(1,100)
-    b = random.randint(1,100)
+    a = random.randint(1,15)
+    b = random.randint(1,15)
     answer = ""
     input_box = pygame.Rect(WIDTH/2, HEIGHT/2, 32, 32)
     color_inactive = pygame.Color('lightskyblue3')
@@ -57,7 +68,7 @@ def get_answer():
                     else:
                         answer += event.unicode
 
-        draw_problem(f"What is {a} + {b}?")
+        draw_problem(f"What is {a} * {b}?")
         char_surface = FONT.render(answer, True, color)
         width = max(200, char_surface.get_width()+10)
         input_box.w = width
@@ -79,13 +90,13 @@ def draw(player, elapsed_time, stars, math_rects):
     WIN.blit(time_text, (10, 10))
 
     WIN.blit(PLAYER_SPRITE, (player.x, player.y))
-
+    
     for star in stars:
-        pygame.draw.rect(WIN, "white", star)
+        WIN.blit(STAR_SPRITE, (star.x, star.y))
 
     for math_rect in math_rects:
-        pygame.draw.rect(WIN, "yellow", math_rect)
-
+        WIN.blit(MATH_SPRITE, (math_rect.x, math_rect.y))
+    
     pygame.display.update()
 
 def main():
@@ -118,7 +129,7 @@ def main():
                 star = pygame.Rect(star_x, -STAR_HEIGHT, STAR_WIDTH, STAR_HEIGHT)
                 stars.append(star)
             
-            star_add_increment = max(200, star_add_increment - 50)
+            star_add_increment = max(200, star_add_increment - 100)
             star_count = 0
 
         math_rect_count += clock.tick(60)
@@ -150,12 +161,15 @@ def main():
        
         if hit and time.time() > invulnerable_until:
             lost_text = FONT.render("You lost!", 1, "white")
+            score_text = FONT.render(f"You survived {int(elapsed_time)} seconds", 1, "white")
             WIN.blit(lost_text, (WIDTH/2 - lost_text.get_width()/2, HEIGHT/2 - lost_text.get_height()/2))
+            WIN.blit(score_text, (WIDTH/1.65 - score_text.get_width()/1.3, HEIGHT/1.7 - score_text.get_height()/2))
             pygame.display.update()
             pygame.time.delay(3000)
             break
 
         for math_rect in math_rects.copy():
+            WIN.blit(MATH_SPRITE, (math_rect.x, math_rect.y))
             math_rect.y += MATH_RECT_VEL
             if math_rect.y > HEIGHT:
                 math_rects.remove(math_rect)
@@ -168,11 +182,16 @@ def main():
                 start_time += problem_duration  
                 if answer == "QUIT":
                     break
-                elif answer is None or answer != a + b:
+                elif answer is None or answer != a * b:
+                    font = pygame.font.Font(None, 36)
+                    lost_text = FONT.render(f"Wrong! The answer was {a*b}", 1, "white")
+                    score_text = FONT.render(f"You survived {int(elapsed_time)} seconds", 1, "white")
+                    WIN.blit(lost_text, (WIDTH/1.65 - lost_text.get_width()/2, HEIGHT/1.7 - lost_text.get_height()/2))
+                    WIN.blit(score_text, (WIDTH/1.65 - score_text.get_width()/2, HEIGHT/1.5 - score_text.get_height()/2))
+                    pygame.display.update()
+                    pygame.time.delay(3000)
                     run = False
                     break
-                else:
-                    invulnerable_until = time.time() + 5
                 
               
         draw(player, elapsed_time, stars, math_rects)
