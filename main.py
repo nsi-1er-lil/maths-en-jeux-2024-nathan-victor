@@ -5,7 +5,7 @@ pygame.font.init()
 pygame.mixer.init()
 pygame.mixer.music.load('music.mp3')  
 pygame.mixer.music.play(-1) 
-pygame.mixer.music.set_volume(0.5) 
+pygame.mixer.music.set_volume(0.2) 
 
 WIDTH, HEIGHT = 1000, 800
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -13,6 +13,7 @@ pygame.display.set_caption("Maths en jeux 2024")
 
 a = random.randint(1,15)
 b = random.randint(1,15)
+invulnerable_until = 0
 
 
 
@@ -20,6 +21,7 @@ BG = pygame.transform.scale(pygame.image.load("brick wall.jpeg"), (WIDTH, HEIGHT
 PLAYER_SPRITE = pygame.image.load("bigbigplayer.png")
 MATH_SPRITE = pygame.image.load("star.png")
 STAR_SPRITE = pygame.image.load("arrow.png")
+PLAYERINV_SPRITE = pygame.image.load("playerinv.png")
 
 PLAYER_WIDTH = PLAYER_SPRITE.get_width()
 PLAYER_HEIGHT = PLAYER_SPRITE.get_height()
@@ -27,13 +29,14 @@ PLAYER_VEL = 12
 
 STAR_WIDTH = 9
 STAR_HEIGHT = 30
-STAR_VEL = 20
+STAR_VEL = 17
 
 MATH_RECT_WIDTH = MATH_SPRITE.get_width()
 MATH_RECT_HEIGHT = MATH_SPRITE.get_height()
 MATH_RECT_VEL = 8
 MATH_RECT_ADD_INCREMENT = 10000
 
+current_player_sprite = PLAYER_SPRITE
 
 FONT = pygame.font.SysFont("comicsans", 30)
 
@@ -83,13 +86,17 @@ def get_answer():
         pygame.draw.rect(WIN, color, input_box, 2)
         pygame.display.flip()
 
-def draw(player, elapsed_time, stars, math_rects):
+def draw(player, elapsed_time, stars, math_rects, invulnerable_until):
+    WIN.fill((0, 0, 0))  
     WIN.blit(BG, (0, 0))
 
-    time_text = FONT.render(f"Time: {round(elapsed_time)}s", 1, "white")
+    time_text = FONT.render(f"Time: {round(elapsed_time)}s", 1, (255, 255, 255))
     WIN.blit(time_text, (10, 10))
-
-    WIN.blit(PLAYER_SPRITE, (player.x, player.y))
+    
+    if time.time() < invulnerable_until:
+        WIN.blit(PLAYERINV_SPRITE, (player.x, player.y))
+    else:
+        WIN.blit(PLAYER_SPRITE, (player.x, player.y))
     
     for star in stars:
         WIN.blit(STAR_SPRITE, (star.x, star.y))
@@ -102,13 +109,13 @@ def draw(player, elapsed_time, stars, math_rects):
 def main():
     run = True
     math_rects = [pygame.Rect(200, 200, MATH_RECT_WIDTH, MATH_RECT_HEIGHT)]
-    invulnerable_until = 0
+    
     player = pygame.Rect(200, HEIGHT - PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT)
     
     clock = pygame.time.Clock()
     start_time = time.time()
     elapsed_time = 0
-
+    invulnerable_until = 0
     star_add_increment = 2000
     star_count = 0
 
@@ -129,7 +136,7 @@ def main():
                 star = pygame.Rect(star_x, -STAR_HEIGHT, STAR_WIDTH, STAR_HEIGHT)
                 stars.append(star)
             
-            star_add_increment = max(200, star_add_increment - 100)
+            star_add_increment = max(200, star_add_increment - 50)
             star_count = 0
 
         math_rect_count += clock.tick(60)
@@ -192,11 +199,16 @@ def main():
                     pygame.time.delay(3000)
                     run = False
                     break
+                else : 
+                    invulnerable_until = time.time() + 5
+               
                 
               
-        draw(player, elapsed_time, stars, math_rects)
+        draw(player, elapsed_time, stars, math_rects, invulnerable_until)
             
     pygame.quit()
 
+if __name__ == "__main__":
+    main()
 if __name__ == "__main__":
     main()
